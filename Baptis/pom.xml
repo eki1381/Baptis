@@ -1,0 +1,52 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>Baptis</groupId>
+  <artifactId>Baptis</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.5.1</version>
+        <configuration>
+          <source/>
+          <target/>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <dependencies> 
+        <!-- Use logback logger -->
+        <dependency> 
+            <groupId>ch.qos.logback</groupId> 
+            <artifactId>logback-classic</artifactId> 
+            <version>1.0.13</version> 
+        </dependency> 
+  
+        <dependency> 
+            <groupId>org.jrebirth.af</groupId> 
+            <artifactId>core</artifactId> 
+            <version>8.5.0</version> 
+        </dependency> 
+  
+        <dependency> 
+            <groupId>org.jrebirth.af</groupId> 
+            <artifactId>preloader</artifactId> 
+            <version>8.5.0</version> 
+        </dependency>
+        <dependency>
+    		<groupId>org.jamel.dbf</groupId>
+    		<artifactId>dbf-reader</artifactId>
+   			 <version>0.0.3</version>
+		</dependency>
+    </dependencies> 
+</project>

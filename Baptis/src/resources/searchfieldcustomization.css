@@ -1,0 +1,13 @@
+.jfx-text-field{
+	-fx-background-color: #5264AE;
+    -fx-font-weight: LIGHTER;
+    -fx-prompt-text-fill: #E1F5FE;
+    -fx-alignment: top-left ;
+    -fx-focus-color: #FFFFFF;
+    -fx-unfocus-color: #FFFFFF;
+    -fx-max-width: 5000;
+    -fx-font-size: 2em;
+    -fx-text-fill : WHITE;
+    -fx-font-family : Roboto;
+    src:"Roboto-Regular.ttf";
+}
