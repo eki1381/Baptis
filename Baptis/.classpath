@@ -17,10 +17,9 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Eki/workspace/Baptis/jfoenix.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eki/workspace/Baptis/lucene-analyzers-common-5.5.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eki/workspace/Baptis/lucene-core-5.5.3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Eki/workspace/Baptis/lucene-queryparser-5.5.3.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Eki/git/Baptis/jfoenix.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Eki/git/Baptis/lucene-analyzers-common-5.5.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Eki/git/Baptis/lucene-core-5.5.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Eki/git/Baptis/lucene-queryparser-5.5.3.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
