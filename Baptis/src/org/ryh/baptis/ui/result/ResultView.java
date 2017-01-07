@@ -31,17 +31,19 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 	
 	private Label titleLabel, namaLabel, jnKelLabel, tmptLahirLabel, tglLahirLabel, parokiLabel
 	, kotaParokiLabel, namaStasiLabel, ayahLabel, ibuLabel, tmptBaptisLabel, tglBaptisLabel, tmptKrismaLabel
-	, tglKrismaLabel, kawinDgnLabel, tglKawinLabel;
+	, tglKrismaLabel, kawinDgnLabel, tglKawinLabel, tglMatiLabel, bukuLabel, halLabel, noLabel;
 	
 	private JFXTextField namaField, jnKelField, tmptLahirField, tglLahirField, parokiField, kotaParokiField
 	, namaStasiField, ayahField, ibuField, tmptBaptisField, tglBaptisField, tmptKrismaField, tglKrismaField
-	, kawinDgnField, tglKawinField;
+	, kawinDgnField, tglKawinField, tglMatiField, bukuField, halField, noField;
+	
+	private ImageView photoImage;
 	
 	public ResultView(ResultModel model) {
 		super(model);
 	}
 	
-	@SuppressWarnings("static-access")
+	@SuppressWarnings({ "static-access", "unused" })
 	@Override
 	protected void initView() {
 		DropShadow ds = new DropShadow();
@@ -60,6 +62,11 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         titleLabel = new Label("PERSON NAME");
         titleLabel.setPrefHeight(100);
         titleLabel.setStyle("-fx-text-fill : WHITE");
+        
+        photoImage = new ImageView(new Image("/resources/user-male-black-shape.png"));
+        photoImage.setFitHeight(200);
+        photoImage.setFitWidth(200);
+        photoImage.setEffect(ds);
         
         namaLabel = new Label("NAMA \t\t\t : ");
         namaField = new JFXTextField("PERSON NAME");
@@ -109,7 +116,7 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         ayahField.setStyle("-fx-background-color : #F5F5F5");
         ayahLabel.setLabelFor(ayahField);
         
-        ibuLabel = new Label("NAMA IBU \t : ");
+        ibuLabel = new Label("NAMA IBU \t\t : ");
         ibuField = new JFXTextField("PERSON MOTHER");
         ibuField.setEditable(false);
         ibuField.setStyle("-fx-background-color : #F5F5F5");
@@ -139,23 +146,72 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         tglKrismaField.setStyle("-fx-background-color : #F5F5F5");
         tglKrismaLabel.setLabelFor(tglKrismaField);
         
-        kawinDgnLabel = new Label("KAWIN DENGAN \t : ");
+        kawinDgnLabel = new Label("KAWIN DENGAN \t\t : ");
         kawinDgnField = new JFXTextField("PERSON MARRIED WITH");
         kawinDgnField.setEditable(false);
         kawinDgnField.setStyle("-fx-background-color : #F5F5F5");
         kawinDgnLabel.setLabelFor(kawinDgnField);
         
         tglKawinLabel = new Label("TANGGAL KAWIN \t : ");
+        tglKawinField = new JFXTextField("PERSON MARRIED DATE");
+        tglKawinField.setEditable(false);
+        tglKawinField.setStyle("-fx-background-color : #F5F5F5");
+        tglKawinLabel.setLabelFor(tglKawinField);
+        
+        tglMatiLabel = new Label("TANGGAL MATI \t\t : ");
+        tglMatiField = new JFXTextField("PERSON DEATH DATE");
+        tglMatiField.setEditable(false);
+        tglMatiField.setStyle("-fx-background-color : #F5F5F5");
+        tglMatiLabel.setLabelFor(tglMatiField);
+        
+        bukuLabel = new Label("BUKU \t\t\t\t : ");
+        bukuField = new JFXTextField("PERSON BOOK");
+        bukuField.setEditable(false);
+        bukuField.setStyle("-fx-background-color : #F5F5F5");
+        bukuLabel.setLabelFor(bukuField);
+        
+        halLabel = new Label("HAL \t\t\t\t : ");
+        halField = new JFXTextField("PERSON PAGE");
+        halField.setEditable(false);
+        halField.setStyle("-fx-background-color : #F5F5F5");
+        halLabel.setLabelFor(halField);
+        
+        noLabel = new Label("NO \t\t\t\t\t : ");
+        noField = new JFXTextField("PERSON NO");
+        noField.setEditable(false);
+        noField.setStyle("-fx-background-color : #F5F5F5");
+        noLabel.setLabelFor(noField);
         
         HBox namaBox = new HBox();
         HBox jnKelBox = new HBox();
         HBox tmptLahirBox = new HBox();
         HBox tglLahirBox = new HBox();
+        HBox parokiBox = new HBox();
+        HBox kotaParokiBox = new HBox();
+        HBox namaStasiBox = new HBox();
+        HBox ayahBox = new HBox();
+        HBox ibuBox = new HBox();
+        HBox tmptBaptisBox = new HBox();
+        HBox tglBaptisBox = new HBox();
+        HBox tmptKrismaBox = new HBox();
+        HBox tglKrismaBox = new HBox();
+        HBox kawinDgnBox = new HBox();
+        HBox tglKawinBox = new HBox();
+        HBox tglMatiBox = new HBox();
+        HBox bukuBox = new HBox();
+        HBox halBox = new HBox();
+        HBox noBox = new HBox();
+        
         VBox leftBox = new VBox();
+        VBox midBox = new VBox();
+        midBox.setSpacing(10);
+        VBox rightBox = new VBox();
+        rightBox.setSpacing(10);
         
         try {
 			final Font f = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Regular.ttf")), 25);
 			final Font g = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Regular.ttf")), 16);
+			final Font i = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Bold.ttf")), 16);
 			titleLabel.setFont(f);
 			namaLabel.setFont(g);
 			namaField.setFont(g);
@@ -165,6 +221,36 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 			tmptLahirField.setFont(g);
 			tglLahirLabel.setFont(g);
 			tglLahirField.setFont(g);
+			parokiLabel.setFont(g);
+			parokiField.setFont(g);
+			kotaParokiLabel.setFont(g);
+			kotaParokiField.setFont(g);
+			namaStasiLabel.setFont(g);
+			namaStasiField.setFont(g);
+			ayahLabel.setFont(g);
+			ayahField.setFont(g);
+			ibuLabel.setFont(g);
+			ibuField.setFont(g);
+			tmptBaptisLabel.setFont(g);
+			tmptBaptisField.setFont(g);
+			tglBaptisLabel.setFont(g);
+			tglBaptisField.setFont(g);
+			tmptKrismaLabel.setFont(g);
+			tmptKrismaField.setFont(g);
+			tglKrismaLabel.setFont(g);
+			tglKrismaField.setFont(g);
+			kawinDgnLabel.setFont(g);
+			kawinDgnField.setFont(g);
+			tglKawinLabel.setFont(g);
+			tglKawinField.setFont(g);
+			tglMatiLabel.setFont(g);
+			tglMatiField.setFont(g);
+			bukuLabel.setFont(g);
+			bukuField.setFont(g);
+			halLabel.setFont(g);
+			halField.setFont(g);
+			noLabel.setFont(g);
+			noField.setFont(g);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -176,14 +262,53 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         tmptLahirBox.setAlignment(Pos.BASELINE_LEFT);
         tglLahirBox.getChildren().addAll(tglLahirLabel, tglLahirField);
         tglLahirBox.setAlignment(Pos.BASELINE_LEFT);
+        parokiBox.getChildren().addAll(parokiLabel, parokiField);
+        parokiBox.setAlignment(Pos.BASELINE_LEFT);
+        kotaParokiBox.getChildren().addAll(kotaParokiLabel, kotaParokiField);
+        kotaParokiBox.setAlignment(Pos.BASELINE_LEFT);
+        namaStasiBox.getChildren().addAll(namaStasiLabel, namaStasiField);
+        namaStasiBox.setAlignment(Pos.BASELINE_LEFT);
+        ayahBox.getChildren().addAll(ayahLabel, ayahField);
+        ayahBox.setAlignment(Pos.BASELINE_LEFT);
+        ibuBox.getChildren().addAll(ibuLabel, ibuField);
+        ibuBox.setAlignment(Pos.BASELINE_LEFT);
+        tmptBaptisBox.getChildren().addAll(tmptBaptisLabel, tmptBaptisField);
+        tmptBaptisBox.setAlignment(Pos.BASELINE_LEFT);
+        tglBaptisBox.getChildren().addAll(tglBaptisLabel, tglBaptisField);
+        tglBaptisBox.setAlignment(Pos.BASELINE_LEFT);
+        tmptKrismaBox.getChildren().addAll(tmptKrismaLabel, tmptKrismaField);
+        tmptKrismaBox.setAlignment(Pos.BASELINE_LEFT);
+        tglKrismaBox.getChildren().addAll(tglKrismaLabel, tglKrismaField);
+        tglKrismaBox.setAlignment(Pos.BASELINE_LEFT);
+        kawinDgnBox.getChildren().addAll(kawinDgnLabel, kawinDgnField);
+        kawinDgnBox.setAlignment(Pos.BASELINE_LEFT);
+        tglKawinBox.getChildren().addAll(tglKawinLabel, tglKawinField);
+        tglKawinBox.setAlignment(Pos.BASELINE_LEFT);
+        tglMatiBox.getChildren().addAll(tglMatiLabel, tglMatiField);
+        tglMatiBox.setAlignment(Pos.BASELINE_LEFT);
+        bukuBox.getChildren().addAll(bukuLabel, bukuField);
+        bukuBox.setAlignment(Pos.BASELINE_LEFT);
+        halBox.getChildren().addAll(halLabel, halField);
+        halBox.setAlignment(Pos.BASELINE_LEFT);
+        noBox.getChildren().addAll(noLabel, noField);
+        noBox.setAlignment(Pos.BASELINE_LEFT);
+        
         topPane.setLeft(backButton);
         topPane.setCenter(titleLabel);
         topPane.setAlignment(backButton, Pos.CENTER_LEFT);
         topPane.setAlignment(titleLabel, Pos.CENTER_LEFT);
-        leftBox.getChildren().addAll(namaBox, jnKelBox, tmptLahirBox, tglLahirBox);
+        leftBox.getChildren().add(photoImage);
+        midBox.getChildren().addAll(namaBox, jnKelBox, tmptLahirBox, tglLahirBox, parokiBox
+        		, kotaParokiBox, namaStasiBox, ayahBox, ibuBox, tmptBaptisBox);
+        rightBox.getChildren().addAll(tglBaptisBox, tmptKrismaBox, tglKrismaBox, kawinDgnBox
+        		, tglKawinBox, tglMatiBox, bukuBox, halBox, noBox);
         node().setTop(topPane);
         node().setLeft(leftBox);
-        node().setMargin(leftBox, new Insets(10));
+        node().setCenter(midBox);
+        node().setRight(rightBox);
+        node().setMargin(leftBox, new Insets(50, 50, 0, 100));
+        node().setMargin(midBox, new Insets(50, 50, 0, 50));
+        node().setMargin(rightBox, new Insets(50, 100, 0, 50));
 	}
 	
 	@Override
