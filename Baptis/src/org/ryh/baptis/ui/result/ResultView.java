@@ -9,6 +9,7 @@ import org.jrebirth.af.api.ui.annotation.RootNodeId;
 import org.jrebirth.af.core.ui.DefaultView;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 
 import javafx.geometry.Insets;
@@ -39,6 +40,11 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 	
 	private ImageView photoImage;
 	
+	@OnAction(name = "Print")
+	private JFXButton printButton;
+	
+	private BorderPane topPane;
+	
 	public ResultView(ResultModel model) {
 		super(model);
 	}
@@ -51,7 +57,7 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         ds.setOffsetX(1.0);
         ds.setColor(Color.GRAY);
         
-        BorderPane topPane = new BorderPane();
+        topPane = new BorderPane();
         topPane.setStyle("-fx-background-color : #5264AE");
         topPane.setEffect(ds);
         topPane.setPrefHeight(100);
@@ -182,6 +188,15 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         noField.setStyle("-fx-background-color : #F5F5F5");
         noLabel.setLabelFor(noField);
         
+        printButton = new JFXButton("", new ImageView(new Image("/resources/printer.png")));
+        printButton.getStyleClass().add("button-raised");
+        printButton.setStyle("-fx-background-color : WHITE;"
+        		+ "-fx-background-radius: 5em; "
+        		+ "-fx-min-width: 3px;"
+        		+ "-fx-min-height: 3px;"
+        		+ "-fx-max-width: 64px;"
+        		+ "-fx-max-height: 64px;");
+        
         HBox namaBox = new HBox();
         HBox jnKelBox = new HBox();
         HBox tmptLahirBox = new HBox();
@@ -201,6 +216,7 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         HBox bukuBox = new HBox();
         HBox halBox = new HBox();
         HBox noBox = new HBox();
+        HBox printBox = new HBox();
         
         VBox leftBox = new VBox();
         VBox midBox = new VBox();
@@ -292,6 +308,8 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         halBox.setAlignment(Pos.BASELINE_LEFT);
         noBox.getChildren().addAll(noLabel, noField);
         noBox.setAlignment(Pos.BASELINE_LEFT);
+        printBox.getChildren().add(printButton);
+        printBox.setAlignment(Pos.BOTTOM_RIGHT);
         
         topPane.setLeft(backButton);
         topPane.setCenter(titleLabel);
@@ -301,11 +319,12 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         midBox.getChildren().addAll(namaBox, jnKelBox, tmptLahirBox, tglLahirBox, parokiBox
         		, kotaParokiBox, namaStasiBox, ayahBox, ibuBox, tmptBaptisBox);
         rightBox.getChildren().addAll(tglBaptisBox, tmptKrismaBox, tglKrismaBox, kawinDgnBox
-        		, tglKawinBox, tglMatiBox, bukuBox, halBox, noBox);
-        node().setTop(topPane);
-        node().setLeft(leftBox);
-        node().setCenter(midBox);
-        node().setRight(rightBox);
+        		, tglKawinBox, tglMatiBox, bukuBox, halBox, noBox, printBox);
+//        node().setTop(topPane);
+//        node().setLeft(leftBox);
+//        node().setCenter(midBox);
+//        node().setRight(rightBox);
+        node().setCenter(new JFXSpinner());
         node().setMargin(leftBox, new Insets(50, 50, 0, 100));
         node().setMargin(midBox, new Insets(50, 50, 0, 50));
         node().setMargin(rightBox, new Insets(50, 100, 0, 50));
@@ -326,4 +345,87 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 		super.hide();
 	}
 
+	public Label getTitleLabel(){
+		return titleLabel;
+	}
+	
+	public JFXTextField getNamaField(){
+		return namaField;
+	}
+	
+	public JFXTextField getJnKelField(){
+		return jnKelField;
+	}
+	
+	public JFXTextField getTmptLahirField(){
+		return tmptLahirField;
+	}
+	
+	public JFXTextField getTglLahirField(){
+		return tglLahirField;
+	}
+	
+	public JFXTextField getParokiField(){
+		return parokiField;
+	}
+	
+	public JFXTextField getKotaParokiField(){
+		return kotaParokiField;
+	}
+	
+	public JFXTextField getNamaStasiField(){
+		return namaStasiField;
+	}
+	
+	public JFXTextField getAyahField(){
+		return ayahField;
+	}
+	
+	public JFXTextField getIbuField(){
+		return ibuField;
+	}
+	
+	public JFXTextField getTmptBaptisField(){
+		return tmptBaptisField;
+	}
+	
+	public JFXTextField getTglBaptisField(){
+		return tglBaptisField;
+	}
+	
+	public JFXTextField getTmptKrismaField(){
+		return tmptKrismaField;
+	}
+	
+	public JFXTextField getTglKrismaField(){
+		return tglKrismaField;
+	}
+	
+	public JFXTextField getKawinDgnField(){
+		return kawinDgnField;
+	}
+	
+	public JFXTextField getTglKawinField(){
+		return tglKawinField;
+	}
+	
+	public JFXTextField getTglMatiField(){
+		return tglMatiField;
+	}
+	
+	public JFXTextField getBukuField(){
+		return bukuField;
+	}
+	
+	public JFXTextField getHalField(){
+		return halField;
+	}
+	
+	public JFXTextField getNoField(){
+		return noField;
+	}
+	
+	public BorderPane getTopPane(){
+		return topPane;
+	}
 }

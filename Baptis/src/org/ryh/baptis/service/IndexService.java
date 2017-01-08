@@ -17,7 +17,6 @@ import org.ryh.baptis.command.IndexDoneNotification;
 
 public interface IndexService extends Service{
 		
-	/** Perform indexing. */
     public static WaveType DO_INDEXING = WBuilder.waveType("INDEXING")
     		.returnWaveType(IndexDoneNotification.DO_INDEXING_DONE)
     		.returnCommandClass(IndexDoneNotification.class)

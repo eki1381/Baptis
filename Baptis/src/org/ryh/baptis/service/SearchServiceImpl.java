@@ -20,8 +20,6 @@ import org.apache.lucene.store.Directory;
 import org.jrebirth.af.api.annotation.PriorityLevel;
 import org.jrebirth.af.api.concurrent.Priority;
 import org.jrebirth.af.api.module.Register;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,31 +29,20 @@ public class SearchServiceImpl extends DefaultService implements SearchService{
 	
 	private ObservableList<Databaptis> searchResults;
 
-    /** The class logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SearchServiceImpl.class);
-
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void initService() {
-    	
-        // Define the service method
         listen(DO_SEARCHING);
     }
 
     @Override
     @Priority(PriorityLevel.High)
     public void doSearching(final String value, final Wave wave) throws ParseException, IOException, InterruptedException {
-        LOGGER.trace("Do Searching.");
-        
         Thread.sleep(2000);
         
         final IndexServiceImpl indexService = getService(IndexServiceImpl.class);
         
         StandardAnalyzer analyzer = indexService.getAnalyzer();
         Directory index = indexService.getIndex();
-//        List<Databaptis> indexedData = indexService.getIndexedData();
 
         String querystr = "NAMA : "+value;
         Query q = new QueryParser("NAMA", analyzer).parse(querystr);
@@ -114,7 +101,6 @@ public class SearchServiceImpl extends DefaultService implements SearchService{
         	searchResult.setNOTANDA5(d.get("NOTANDA5").toString());
         	
         	searchResults.add(searchResult);
-        	
         }
         
     }

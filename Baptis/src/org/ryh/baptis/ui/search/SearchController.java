@@ -6,8 +6,10 @@ import org.jrebirth.af.core.ui.adapter.KeyAdapter;
 import org.jrebirth.af.core.wave.WBuilder;
 import org.ryh.baptis.beans.Databaptis;
 import org.ryh.baptis.beans.Page;
+import org.ryh.baptis.command.LoadResultCommand;
 import org.ryh.baptis.command.SearchCommand;
 import org.ryh.baptis.ui.BaptisWaves;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -27,6 +29,7 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 			public void changed(ObservableValue<? extends Databaptis> arg0, Databaptis arg1, Databaptis arg2) {
 				model().sendWave(BaptisWaves.DO_SHOW_PAGE, WBuilder.waveData(BaptisWaves.PAGE, Page.Result));
 				model().selectedData = arg0.getValue();
+				callCommand(LoadResultCommand.class);
 				model().sendWave(BaptisWaves.DO_SHOW_DATA, WBuilder.waveData(BaptisWaves.DATA, arg0.getValue()));
 			}
 		});

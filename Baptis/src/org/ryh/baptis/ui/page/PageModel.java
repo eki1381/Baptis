@@ -35,13 +35,10 @@ public class PageModel extends DefaultSimpleModel<StackPane>{
                                                                   .appendChild(false);
 
         switch (page) {
-
             case Search:
-            	System.out.println("Search page is loaded");
                 waveBean.showModelKey(Key.create(SearchModel.class));
                 break;
             case Result:
-            	System.out.println("Result page is loaded");
                 waveBean.showModelKey(Key.create(ResultModel.class));
                 break;
         }
@@ -54,6 +51,7 @@ public class PageModel extends DefaultSimpleModel<StackPane>{
 
     @Override
     protected void showView() {
+//    	doShowPage(Page.Result, null);
         doShowPage(Page.Search, null);
     }
 
