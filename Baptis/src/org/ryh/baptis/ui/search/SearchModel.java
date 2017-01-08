@@ -7,7 +7,7 @@ import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.core.ui.object.DefaultObjectModel;
 import org.jrebirth.af.core.wave.WBuilder;
 import org.ryh.baptis.beans.Databaptis;
-import org.ryh.baptis.beans.Search;
+import org.ryh.baptis.beans.DatabaptisProperty;
 import org.ryh.baptis.command.IndexCommand;
 import org.ryh.baptis.ui.BaptisWaves;
 import com.jfoenix.controls.JFXListCell;
@@ -25,7 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 
-public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Search>{
+public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, DatabaptisProperty>{
 	
 	public Databaptis selectedData;
 
@@ -33,7 +33,6 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Sea
 	protected void initModel() {
 		callCommand(IndexCommand.class);
 		listen(BaptisWaves.DO_SHOW_RESULT);
-		listen(BaptisWaves.DO_NOTIFY_RESULT);
 	}
 
 	@Override
@@ -43,7 +42,7 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Sea
 
 	@Override
 	protected void bind() {
-		view().getSearchField().textProperty().bindBidirectional(object().searchFieldProperty());
+		
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Sea
 	}
 
 	public String getSearchObject() {
-		return object().getSearchFieldProperty();
+		return view().getSearchField().getText();
 	}
 
 	public void doShowResult(final ObservableList<Databaptis> result, final Wave wave){

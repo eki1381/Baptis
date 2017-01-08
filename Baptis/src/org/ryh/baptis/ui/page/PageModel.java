@@ -39,7 +39,7 @@ public class PageModel extends DefaultSimpleModel<StackPane>{
                 waveBean.showModelKey(Key.create(SearchModel.class));
                 break;
             case Result:
-                waveBean.showModelKey(Key.create(ResultModel.class));
+                waveBean.showModelKey(Key.create(ResultModel.class, getModel(SearchModel.class).object()));
                 break;
         }
 
@@ -51,7 +51,6 @@ public class PageModel extends DefaultSimpleModel<StackPane>{
 
     @Override
     protected void showView() {
-//    	doShowPage(Page.Result, null);
         doShowPage(Page.Search, null);
     }
 

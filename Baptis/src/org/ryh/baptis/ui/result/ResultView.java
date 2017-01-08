@@ -9,7 +9,6 @@ import org.jrebirth.af.api.ui.annotation.RootNodeId;
 import org.jrebirth.af.core.ui.DefaultView;
 
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
 
 import javafx.geometry.Insets;
@@ -320,11 +319,10 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         		, kotaParokiBox, namaStasiBox, ayahBox, ibuBox, tmptBaptisBox);
         rightBox.getChildren().addAll(tglBaptisBox, tmptKrismaBox, tglKrismaBox, kawinDgnBox
         		, tglKawinBox, tglMatiBox, bukuBox, halBox, noBox, printBox);
-//        node().setTop(topPane);
-//        node().setLeft(leftBox);
-//        node().setCenter(midBox);
-//        node().setRight(rightBox);
-        node().setCenter(new JFXSpinner());
+        node().setTop(topPane);
+        node().setLeft(leftBox);
+        node().setCenter(midBox);
+        node().setRight(rightBox);
         node().setMargin(leftBox, new Insets(50, 50, 0, 100));
         node().setMargin(midBox, new Insets(50, 50, 0, 50));
         node().setMargin(rightBox, new Insets(50, 100, 0, 50));

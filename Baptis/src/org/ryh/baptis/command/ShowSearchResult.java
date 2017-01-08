@@ -10,12 +10,12 @@ import org.ryh.baptis.ui.BaptisWaves;
 public class ShowSearchResult extends DefaultCommand{
 
 	@Override
-    protected void initCommand() {
-    	
-    }
-    
-    @Override
-    protected void perform(Wave wave) throws CommandException {
-    	final SearchServiceImpl service = getService(SearchServiceImpl.class);
-    	sendWave(BaptisWaves.DO_SHOW_RESULT, WBuilder.waveData(BaptisWaves.RESULT,service.getSearchResult()));    }
+	protected void initCommand() {
+
+	}
+
+	@Override
+	protected void perform(Wave wave) throws CommandException {
+		final SearchServiceImpl service = getService(SearchServiceImpl.class);
+		sendWave(BaptisWaves.DO_SHOW_RESULT, WBuilder.waveData(BaptisWaves.RESULT,service.getSearchResult()));    }
 }
