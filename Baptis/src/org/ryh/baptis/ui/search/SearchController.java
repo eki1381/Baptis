@@ -11,6 +11,9 @@ import org.ryh.baptis.beans.Page;
 import org.ryh.baptis.command.SearchCommand;
 import org.ryh.baptis.ui.BaptisWaves;
 
+import com.jfoenix.controls.JFXPopup.PopupHPosition;
+import com.jfoenix.controls.JFXPopup.PopupVPosition;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -51,8 +54,21 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 	}
 
 	public void onActionSearch(final ActionEvent actionEvent){
-		view().showLoadingAnimation();
-		callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, model().getSearchObject()));
+		if(view().getSearchField().getText() == null || view().getSearchField().getText().equals("")){
+			view().getNullErrorDialog().show();
+		}else{
+			view().showLoadingAnimation();
+			callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, model().getSearchObject()));
+		}
+	}
+	
+	public void onActionSettings(final ActionEvent actionEvent){
+		view().getPopUp().show(PopupVPosition.TOP, PopupHPosition.RIGHT);
+	}
+	
+	public void onActionChoose(final ActionEvent actionEvent){
+		model().showFileChooser();
+		view().getPopUp().close();
 	}
 
 	private void bind(Databaptis arg0){

@@ -1,15 +1,26 @@
 package org.ryh.baptis.ui.search;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 import org.jrebirth.af.api.exception.CoreException;
 import org.jrebirth.af.api.ui.annotation.OnAction;
 import org.jrebirth.af.api.ui.annotation.RootNodeId;
 import org.jrebirth.af.core.ui.DefaultView;
 import org.ryh.baptis.beans.Databaptis;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXListView;
+import com.jfoenix.controls.JFXPopup;
 import com.jfoenix.controls.JFXSpinner;
 import com.jfoenix.controls.JFXTextField;
+
+import com.jfoenix.controls.JFXDialog.DialogTransition;
 import javafx.animation.FadeTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -18,21 +29,37 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.util.Duration;
 
 @RootNodeId("SearchPanel")
-public class SearchView extends DefaultView<SearchModel, BorderPane, SearchController>{
+public class SearchView extends DefaultView<SearchModel, StackPane, SearchController>{
     
+	private BorderPane root;
     private JFXTextField searchField;
     private JFXSpinner loadingSpinner;
-    private Label totalResult;
+    private Label totalResult, advSearchLabel;
     private VBox notFoundContainer;
-	private JFXListView<Databaptis> list = new JFXListView<Databaptis>();;
-	    
+	private JFXListView<Databaptis> list = new JFXListView<Databaptis>();
+	private JFXPopup popUp = new JFXPopup();
+	private JFXListView<Label> menuList;
+	private ImageView downArrowImg;
+	
+	@OnAction(name = "Choose")
+	private JFXButton settingMenuButton;
+	private FileChooser fileChooser;
+	
     @OnAction(name = "Search")
     private JFXButton searchButton;
+    
+    @OnAction(name = "Settings")
+    private JFXButton settingButton;
+    
+    private JFXDialog nullErrorDialog;
 
     public SearchView(final SearchModel model) throws CoreException {
         super(model);
@@ -40,7 +67,13 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
 
     @SuppressWarnings("static-access")
 	@Override
-    protected void initView() {    	
+    protected void initView() {
+    	fileChooser = new FileChooser();
+    	fileChooser.getExtensionFilters().addAll(
+    		    new FileChooser.ExtensionFilter("Database File", "*.dbf")
+    		);
+    	root = new BorderPane();
+    	
     	DropShadow ds = new DropShadow();
         ds.setOffsetY(1.0);
         ds.setOffsetX(1.0);
@@ -51,8 +84,8 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
         logoImage.setFitWidth(150);
         logoImage.setFitHeight(150);
         
-        HBox searchPane = new HBox();
-        searchPane.setSpacing(20);
+        VBox searchPane = new VBox();
+        searchPane.setSpacing(30);
     	
     	this.searchField = new JFXTextField();
     	this.searchField.setLabelFloat(false);
@@ -68,23 +101,85 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
         		+ "-fx-min-height: 3px;"
         		+ "-fx-max-width: 40px;"
         		+ "-fx-max-height: 40px;");
+        
+        advSearchLabel = new Label("Pencarian Lanjutan");
+        advSearchLabel.setStyle("-fx-text-fill : WHITE;");
+        downArrowImg = new ImageView(new Image("resources/sort-down.png"));
+        
+        HBox topSearchPane = new HBox(searchField,searchButton);
+        topSearchPane.setSpacing(20);
+        topSearchPane.setAlignment(Pos.BASELINE_LEFT);
+        HBox botSearchPane = new HBox(advSearchLabel, downArrowImg);
+        botSearchPane.setAlignment(Pos.CENTER_LEFT);
+        botSearchPane.setMargin(advSearchLabel, new Insets(0, 0, 0, 540));
+        botSearchPane.setSpacing(10);
 
-        searchPane.getChildren().addAll(searchField,searchButton);
+        searchPane.getChildren().addAll(topSearchPane, botSearchPane);
         searchPane.setAlignment(Pos.CENTER_LEFT);
         
         this.totalResult = new Label();
         totalResult.getStyleClass().add("hasil");
         topPane.setMargin(totalResult, new Insets(0,20,10,0));
         topPane.setAlignment(totalResult, Pos.CENTER_RIGHT);
+        
+        settingButton = new JFXButton("", new ImageView(new Image("/resources/settings.png")));
+        settingButton.setStyle("-fx-background-color : #5264AE;"
+        		+ "-fx-background-radius: 5em; "
+        		+ "-fx-min-width: 3px;"
+        		+ "-fx-min-height: 3px;"
+        		+ "-fx-max-width: 30px;"
+        		+ "-fx-max-height: 30px;");
+        
+        menuList = new JFXListView<Label>();
+        menuList.setStyle("-fx-vertical-gap : 0;");
+        Label chgDirMenu = new Label("Buka direktori index ...");
+        chgDirMenu.setStyle("-fx-font-weight : normal;"
+        		+ "-fx-font-size : 12");
+        menuList.getItems().add(chgDirMenu);
+        settingMenuButton = new JFXButton("Buka direktori index ...");
              
         topPane.setLeft(logoImage);
         topPane.setCenter(searchPane);
         topPane.setBottom(totalResult);
+        topPane.setRight(settingButton);
         topPane.setStyle("-fx-background-color : #5264AE");
         topPane.setEffect(ds);
+        topPane.setAlignment(settingButton, Pos.CENTER_RIGHT);
+        topPane.setMargin(settingButton, new Insets(0, 20, 0, 0));
         
-        node().setTop(topPane);
-        node().setStyle("-fx-background-color : #F5F5F5");
+        popUp = new JFXPopup();
+		popUp.setContent(settingMenuButton);
+		popUp.setPopupContainer(topPane);
+		popUp.setSource(settingButton);
+        
+        root.setTop(topPane);
+        root.setStyle("-fx-background-color : #F5F5F5");
+        
+        JFXDialogLayout nullErrorLayout = new JFXDialogLayout();
+        JFXButton nullErrorButton = new JFXButton("OK");
+        nullErrorButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+			@Override
+			public void handle(ActionEvent event) {
+				nullErrorDialog.close();
+				
+			}
+		});
+        nullErrorLayout.setHeading(new Label("KATA KUNCI KOSONG"));
+        Label body = new Label("Silakan isi kata kunci pada field pencarian.");
+        nullErrorLayout.setBody(body);
+        nullErrorLayout.setAlignment(body, Pos.BOTTOM_LEFT);
+        nullErrorLayout.setActions(nullErrorButton);
+        nullErrorDialog = new JFXDialog(node(), nullErrorLayout, DialogTransition.CENTER);
+        
+        node().getChildren().add(root);
+        
+        try{
+        	final Font f = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Regular.ttf")), 14);
+        	advSearchLabel.setFont(f);
+        }catch(FileNotFoundException e){
+        	
+        }
     }
 
     @Override
@@ -114,7 +209,7 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
 		totalResult.setText("");
 		loadingSpinner = new JFXSpinner();
 		loadingSpinner.setRadius(25);
-		node().setCenter(loadingSpinner);
+		root.setCenter(loadingSpinner);
 		FadeTransition ft = new FadeTransition(Duration.millis(2000), loadingSpinner);
 		ft.setFromValue(0.0);
 		ft.setToValue(1.0);
@@ -136,7 +231,7 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
 		notFoundContainer.setAlignment(Pos.CENTER);
 		notFoundContainer.setSpacing(20);
 		
-		node().setCenter(notFoundContainer);
+		root.setCenter(notFoundContainer);
 	}
 	
 	@SuppressWarnings("static-access")
@@ -144,8 +239,8 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
 		
 		list.getStyleClass().add("mylistview");
 		
-		node().setCenter(list);
-		node().setMargin(list, new Insets(20));
+		root.setCenter(list);
+		root.setMargin(list, new Insets(20));
 		list.depthProperty().set(1);
 	}
 	
@@ -157,4 +252,19 @@ public class SearchView extends DefaultView<SearchModel, BorderPane, SearchContr
 		return this.list;
 	}
 	
+	public JFXDialog getNullErrorDialog(){
+		return nullErrorDialog;
+	}
+	
+	public JFXPopup getPopUp(){
+		return popUp;
+	}
+
+	public JFXListView<Label> getMenuList() {
+		return menuList;
+	}
+
+	public FileChooser getFileChooser() {
+		return fileChooser;
+	}
 }

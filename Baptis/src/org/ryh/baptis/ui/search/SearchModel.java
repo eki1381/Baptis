@@ -27,12 +27,14 @@ import javafx.util.Callback;
 
 public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, DatabaptisProperty>{
 	
-	public Databaptis selectedData;
+	private Databaptis selectedData;
+	private File indexFile;
 
 	@Override
 	protected void initModel() {
-		callCommand(IndexCommand.class);
+		callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, new File("databaptis.dbf")));
 		listen(BaptisWaves.DO_SHOW_RESULT);
+		indexFile = null;
 	}
 
 	@Override
@@ -130,5 +132,18 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Dat
 	
 	public void doNotifyResult(final Wave wave){
 		sendWave(BaptisWaves.DO_SHOW_DATA, WBuilder.waveData(BaptisWaves.DATA, selectedData));
+	}
+	
+	public void showFileChooser(){
+		try{
+			indexFile = view().getFileChooser().showOpenDialog(null);
+			callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, indexFile));
+		}catch(NullPointerException e){
+			
+		}
+	}
+
+	public File getIndexFile() {
+		return indexFile;
 	}
 }

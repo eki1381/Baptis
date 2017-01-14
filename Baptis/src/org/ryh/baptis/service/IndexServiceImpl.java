@@ -37,13 +37,13 @@ public class IndexServiceImpl extends DefaultService implements IndexService{
 	}
 	
 	@Override
-	public void doIndexing(Wave wave) throws IOException {
+	public void doIndexing(File file, Wave wave) throws IOException {
 		analyzer = new StandardAnalyzer();
 		index = new RAMDirectory();
 		IndexWriterConfig config = new IndexWriterConfig(analyzer);
 		IndexWriter w = new IndexWriter(index, config);
 				
-		File dbf = new File("databaptis.dbf");
+		File dbf = file;
 		indexedData = DbfProcessor.loadData(dbf, new DbfRowMapper<Databaptis>() {
 		@Override
 		public Databaptis mapRow(Object[] row) {
