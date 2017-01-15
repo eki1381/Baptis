@@ -31,7 +31,7 @@ public interface BaptisWaves extends Preloadable{
     String INDEX_DOC = "INDEX_DOC";
 
     /** Search property to display. */
-	WaveItem<String> SEARCH = new WaveItemBase<String>(){};
+	WaveItem<Databaptis> SEARCH = new WaveItemBase<Databaptis>(){};
 
 	/** The start action code. */
     String SEARCH_KEYWORD = "SEARCH_KEYWORD";

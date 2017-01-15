@@ -11,6 +11,7 @@ import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.api.wave.contract.WaveType;
 import org.jrebirth.af.core.wave.JRebirthItems;
 import org.jrebirth.af.core.wave.WBuilder;
+import org.ryh.baptis.beans.Databaptis;
 import org.ryh.baptis.command.ShowSearchResult;
 import org.ryh.baptis.ui.BaptisWaves;
 
@@ -24,6 +25,6 @@ public interface SearchService extends Service{
     		.returnItem(JRebirthItems.voidItem);
     
     @Priority(PriorityLevel.High)
-    void doSearching(final String value, final Wave wave) throws ParseException, IOException, InterruptedException;
+    void doSearching(final Databaptis databaptis, final Wave wave) throws ParseException, IOException, InterruptedException;
 	
 }

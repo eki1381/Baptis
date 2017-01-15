@@ -12,6 +12,8 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -26,87 +28,111 @@ import javafx.collections.ObservableList;
 
 @Register(value = SearchService.class, priority = PriorityLevel.High)
 public class SearchServiceImpl extends DefaultService implements SearchService{
-	
+
 	private ObservableList<Databaptis> searchResults;
 
-    @Override
-    public void initService() {
-        listen(DO_SEARCHING);
-    }
+	@Override
+	public void initService() {
+		listen(DO_SEARCHING);
+	}
 
-    @Override
-    @Priority(PriorityLevel.High)
-    public void doSearching(final String value, final Wave wave) throws ParseException, IOException, InterruptedException {
-        Thread.sleep(2000);
-        
-        final IndexServiceImpl indexService = getService(IndexServiceImpl.class);
-        
-        StandardAnalyzer analyzer = indexService.getAnalyzer();
-        Directory index = indexService.getIndex();
+	@Override
+	@Priority(PriorityLevel.High)
+	public void doSearching(final Databaptis databaptis, final Wave wave) throws ParseException, IOException, InterruptedException {
+		Thread.sleep(2000);
 
-        String querystr = "NAMA : "+value;
-        Query q = new QueryParser("NAMA", analyzer).parse(querystr);
-        int hitsPerPage = 10;
-        IndexReader reader = DirectoryReader.open(index);
-        IndexSearcher searcher = new IndexSearcher(reader);
-        TopDocs docs = searcher.search(q, hitsPerPage);
-        ScoreDoc[] hits = docs.scoreDocs;
+		final IndexServiceImpl indexService = getService(IndexServiceImpl.class);
 
-        searchResults = FXCollections.observableArrayList();
-        
-        for(int i = 0;i < hits.length;i++){
-        	
-        	int docId = hits[i].doc;
-        	Document d = searcher.doc(docId);
-        	
-        	Databaptis searchResult = new Databaptis();
-        	searchResult.setPAROKI(d.get("PAROKI").toString());
-        	searchResult.setKOTAPAROKI(d.get("KOTAPAROKI").toString());
-        	searchResult.setKDSTASI(d.get("KDSTASI").toString());
-        	searchResult.setNAMASTASI(d.get("NAMASTASI").toString());
-        	searchResult.setBUKU(d.get("BUKU").toString());
-        	searchResult.setHAL(Integer.valueOf(d.get("HAL")));
-        	searchResult.setNO(Integer.valueOf(d.get("NO")));
-        	searchResult.setNAMA(d.get("NAMA").toString());
-        	searchResult.setJNKEL(Integer.valueOf(d.get("JNKEL")));
-        	searchResult.setTMPLAHIR(d.get("TMPLAHIR"));
-        	searchResult.setTGLLAHIR(new Date(Long.valueOf(d.get("TGLLAHIR"))));
-        	searchResult.setTMPBAPTIS(d.get("TMPBAPTIS").toString());
-        	searchResult.setTGLBAPTIS(new Date(Long.valueOf(d.get("TGLBAPTIS"))));
-        	searchResult.setTERIMADR(d.get("TERIMADR").toString());
-        	searchResult.setTERIMADI(d.get("TERIMADI").toString());
-        	searchResult.setTERIMATGL(new Date(Long.valueOf(d.get("TERIMATGL"))));
-        	searchResult.setAYAH(d.get("AYAH").toString());
-        	searchResult.setIBU(d.get("IBU").toString());
-        	searchResult.setWALIBAPTIS(d.get("WALIBAPTIS").toString());
-        	searchResult.setYGBAPTIS(d.get("YGBAPTIS").toString());
-        	searchResult.setYGTERIMA(d.get("YGTERIMA").toString());
-        	searchResult.setPRKKRISMA(d.get("PRKKRISMA").toString());
-        	searchResult.setTMPKRISMA(d.get("TMPKRISMA").toString());
-        	searchResult.setTGLKRISMA(new Date(Long.valueOf(d.get("TGLKRISMA"))));
-        	searchResult.setKWDENGAN(d.get("KWDENGAN"));
-        	searchResult.setPRKKW(d.get("PRKKW"));
-        	searchResult.setTMPKW(d.get("TMPKW"));
-        	searchResult.setTGLKW(new Date(Long.valueOf(d.get("TGLKW"))));
-        	searchResult.setLM(d.get("LM").toString());
-        	searchResult.setLMNO(d.get("LMNO").toString());
-        	searchResult.setTMPMATI(d.get("TMPMATI").toString());
-        	searchResult.setTGLMATI(new Date(Long.valueOf(d.get("TGLMATI"))));
-        	searchResult.setJNNOTANDA(Integer.valueOf(d.get("JNNOTANDA")));
-        	searchResult.setNOTANDA(d.get("NOTANDA").toString());
-        	searchResult.setNOTANDA1(d.get("NOTANDA1").toString());
-        	searchResult.setNOTANDA2(new Date(Long.valueOf(d.get("NOTANDA2"))));
-        	searchResult.setNOTANDA3(d.get("NOTANDA3").toString());
-        	searchResult.setNOTANDA4(new Date(Long.valueOf(d.get("NOTANDA4"))));
-        	searchResult.setNOTANDA5(d.get("NOTANDA5").toString());
-        	
-        	searchResults.add(searchResult);
-        }
-        
-    }
-    
-    public ObservableList<Databaptis> getSearchResult(){
-    	return searchResults;
-    }
+		StandardAnalyzer analyzer = indexService.getAnalyzer();
+		Directory index = indexService.getIndex();
+
+		BooleanQuery.Builder finalQuery = new BooleanQuery.Builder();
+		
+		if(databaptis.getNAMA() != null){
+			String queryName = databaptis.getNAMA();
+			Query q = new QueryParser("NAMA", analyzer).parse(queryName);
+			finalQuery.add(q, Occur.MUST);
+		}
+		
+		if(databaptis.getTGLLAHIR() != null){
+			String queryName = String.valueOf(databaptis.getTGLLAHIR().getTime());
+			Query r = new QueryParser("TGLLAHIR", analyzer).parse(queryName);
+			finalQuery.add(r, Occur.MUST);
+		}
+			
+		if(databaptis.getPAROKI() != null){
+			String queryParish = databaptis.getPAROKI();
+			Query s = new QueryParser("PAROKI", analyzer).parse(queryParish);
+			finalQuery.add(s, Occur.MUST);
+		}
+		
+		if(databaptis.getKOTAPAROKI() != null){
+			String queryParishCity = databaptis.getKOTAPAROKI();
+			Query t = new QueryParser("KOTAPAROKI", analyzer).parse(queryParishCity);
+			finalQuery.add(t, Occur.MUST);
+		}
+		
+		int hitsPerPage = 10;
+		IndexReader reader = DirectoryReader.open(index);
+		IndexSearcher searcher = new IndexSearcher(reader);
+		TopDocs docs = searcher.search(finalQuery.build(), hitsPerPage);
+		ScoreDoc[] hits = docs.scoreDocs;
+
+		searchResults = FXCollections.observableArrayList();
+
+		for(int i = 0;i < hits.length;i++){
+
+			int docId = hits[i].doc;
+			Document d = searcher.doc(docId);
+
+			Databaptis searchResult = new Databaptis();
+			searchResult.setPAROKI(d.get("PAROKI").toString());
+			searchResult.setKOTAPAROKI(d.get("KOTAPAROKI").toString());
+			searchResult.setKDSTASI(d.get("KDSTASI").toString());
+			searchResult.setNAMASTASI(d.get("NAMASTASI").toString());
+			searchResult.setBUKU(d.get("BUKU").toString());
+			searchResult.setHAL(Integer.valueOf(d.get("HAL")));
+			searchResult.setNO(Integer.valueOf(d.get("NO")));
+			searchResult.setNAMA(d.get("NAMA").toString());
+			searchResult.setJNKEL(Integer.valueOf(d.get("JNKEL")));
+			searchResult.setTMPLAHIR(d.get("TMPLAHIR"));
+			searchResult.setTGLLAHIR(new Date(Long.valueOf(d.get("TGLLAHIR"))));
+			searchResult.setTMPBAPTIS(d.get("TMPBAPTIS").toString());
+			searchResult.setTGLBAPTIS(new Date(Long.valueOf(d.get("TGLBAPTIS"))));
+			searchResult.setTERIMADR(d.get("TERIMADR").toString());
+			searchResult.setTERIMADI(d.get("TERIMADI").toString());
+			searchResult.setTERIMATGL(new Date(Long.valueOf(d.get("TERIMATGL"))));
+			searchResult.setAYAH(d.get("AYAH").toString());
+			searchResult.setIBU(d.get("IBU").toString());
+			searchResult.setWALIBAPTIS(d.get("WALIBAPTIS").toString());
+			searchResult.setYGBAPTIS(d.get("YGBAPTIS").toString());
+			searchResult.setYGTERIMA(d.get("YGTERIMA").toString());
+			searchResult.setPRKKRISMA(d.get("PRKKRISMA").toString());
+			searchResult.setTMPKRISMA(d.get("TMPKRISMA").toString());
+			searchResult.setTGLKRISMA(new Date(Long.valueOf(d.get("TGLKRISMA"))));
+			searchResult.setKWDENGAN(d.get("KWDENGAN"));
+			searchResult.setPRKKW(d.get("PRKKW"));
+			searchResult.setTMPKW(d.get("TMPKW"));
+			searchResult.setTGLKW(new Date(Long.valueOf(d.get("TGLKW"))));
+			searchResult.setLM(d.get("LM").toString());
+			searchResult.setLMNO(d.get("LMNO").toString());
+			searchResult.setTMPMATI(d.get("TMPMATI").toString());
+			searchResult.setTGLMATI(new Date(Long.valueOf(d.get("TGLMATI"))));
+			searchResult.setJNNOTANDA(Integer.valueOf(d.get("JNNOTANDA")));
+			searchResult.setNOTANDA(d.get("NOTANDA").toString());
+			searchResult.setNOTANDA1(d.get("NOTANDA1").toString());
+			searchResult.setNOTANDA2(new Date(Long.valueOf(d.get("NOTANDA2"))));
+			searchResult.setNOTANDA3(d.get("NOTANDA3").toString());
+			searchResult.setNOTANDA4(new Date(Long.valueOf(d.get("NOTANDA4"))));
+			searchResult.setNOTANDA5(d.get("NOTANDA5").toString());
+
+			searchResults.add(searchResult);
+		}
+
+	}
+
+	public ObservableList<Databaptis> getSearchResult(){
+		return searchResults;
+	}
 
 }

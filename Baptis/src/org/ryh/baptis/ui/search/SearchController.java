@@ -1,6 +1,9 @@
 package org.ryh.baptis.ui.search;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 import org.jrebirth.af.api.exception.CoreException;
 import org.jrebirth.af.core.ui.DefaultController;
@@ -17,10 +20,14 @@ import com.jfoenix.controls.JFXPopup.PopupVPosition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.scene.Cursor;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 
 public class SearchController extends DefaultController<SearchModel, SearchView> implements KeyAdapter{
-
+	
+	private Databaptis databaptis;
+	
 	public SearchController(final SearchView view) throws CoreException {
 		super(view);
 	}
@@ -35,13 +42,51 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 				model().sendWave(BaptisWaves.DO_SHOW_PAGE, WBuilder.waveData(BaptisWaves.PAGE, Page.Result));
 			}
 		});
+		view().getSearchButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getSearchButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
+		view().getSettingButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getSettingButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
+		view().getDownArrowImg().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> advSearchLabelMouseEntered(true));
+		view().getDownArrowImg().addEventFilter(MouseEvent.MOUSE_EXITED, e -> advSearchLabelMouseEntered(false));
+		view().getAdvSearchLabel().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> advSearchLabelMouseEntered(true));
+		view().getAdvSearchLabel().addEventFilter(MouseEvent.MOUSE_EXITED, e -> advSearchLabelMouseEntered(false));
+		view().getDownArrowImg().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> showAdvPopUp());
+		view().getAdvSearchLabel().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> showAdvPopUp());
+		view().getAdvCancelButton().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> view().getAdvPopUp().close());
+		view().getAdvOkButton().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> advSearching());
+	}
+	
+	private void advSearchLabelMouseEntered(boolean isEntered){
+		if(isEntered){
+			view().getAdvSearchLabel().setUnderline(true);
+			changeCursor(isEntered);
+		}else{
+			view().getAdvSearchLabel().setUnderline(false);
+			changeCursor(isEntered);
+		}
+	}
+	
+	private void changeCursor(boolean isEntered){
+		if(isEntered){
+			view().node().setCursor(Cursor.HAND);
+		}else{
+			view().node().setCursor(Cursor.DEFAULT);
+		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent keyEvent) {
 		switch(keyEvent.getCode()){
-		case ENTER :  if(node().getScene().getFocusOwner() == view().getSearchField()){view().showLoadingAnimation();
-		callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, model().getSearchObject()));}	
+		case ENTER :  if(node().getScene().getFocusOwner() == view().getSearchField()){
+			if(view().getSearchField().getText() == null || view().getSearchField().getText().equals("")){
+				view().getNullErrorDialog().show();
+			}else{
+				view().showLoadingAnimation();
+				databaptis = new Databaptis();
+				databaptis.setNAMA(model().getSearchObject());
+				callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, databaptis));
+			}
+			}	
 		break;
 		default:
 			break;
@@ -58,7 +103,9 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 			view().getNullErrorDialog().show();
 		}else{
 			view().showLoadingAnimation();
-			callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, model().getSearchObject()));
+			databaptis = new Databaptis();
+			databaptis.setNAMA(model().getSearchObject());
+			callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, databaptis));
 		}
 	}
 	
@@ -69,6 +116,32 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 	public void onActionChoose(final ActionEvent actionEvent){
 		model().showFileChooser();
 		view().getPopUp().close();
+	}
+	
+	public void showAdvPopUp(){
+		view().getRoot().setCenter(null);
+		view().getAdvPopUp().show(PopupVPosition.TOP, PopupHPosition.RIGHT);
+	}
+	
+	public void advSearching(){
+		view().showLoadingAnimation();
+		databaptis = new Databaptis();
+		if(view().getNameAdvField().getText().length() > 0){
+			databaptis.setNAMA(view().getNameAdvField().getText());
+		}
+		if(view().getDatePicker().getValue() != null){
+			LocalDate localDate = view().getDatePicker().getValue();
+			Date date = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+			databaptis.setTGLLAHIR(date);
+		}
+		if(view().getParishAdvField().getText().length() > 0){
+			databaptis.setPAROKI(view().getParishAdvField().getText());
+		}
+		if(view().getParishCityAdvField().getText().length() > 0){
+			databaptis.setKOTAPAROKI(view().getParishCityAdvField().getText());
+		}
+		callCommand(SearchCommand.class,WBuilder.waveData(BaptisWaves.SEARCH, databaptis));
+		view().getAdvPopUp().close();
 	}
 
 	private void bind(Databaptis arg0){

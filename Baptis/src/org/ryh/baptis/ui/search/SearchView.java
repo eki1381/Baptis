@@ -10,6 +10,7 @@ import org.jrebirth.af.api.ui.annotation.RootNodeId;
 import org.jrebirth.af.core.ui.DefaultView;
 import org.ryh.baptis.beans.Databaptis;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDatePicker;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXListView;
@@ -40,14 +41,18 @@ import javafx.util.Duration;
 public class SearchView extends DefaultView<SearchModel, StackPane, SearchController>{
     
 	private BorderPane root;
-    private JFXTextField searchField;
+    private JFXTextField searchField, nameAdvField, parishAdvField, parishCityAdvField;
     private JFXSpinner loadingSpinner;
     private Label totalResult, advSearchLabel;
     private VBox notFoundContainer;
 	private JFXListView<Databaptis> list = new JFXListView<Databaptis>();
-	private JFXPopup popUp = new JFXPopup();
+	private JFXPopup popUp, advPopUp;
 	private JFXListView<Label> menuList;
 	private ImageView downArrowImg;
+	private JFXDatePicker datePicker;
+	
+	private JFXButton advOkButton;
+	private JFXButton advCancelButton;
 	
 	@OnAction(name = "Choose")
 	private JFXButton settingMenuButton;
@@ -151,6 +156,37 @@ public class SearchView extends DefaultView<SearchModel, StackPane, SearchContro
 		popUp.setContent(settingMenuButton);
 		popUp.setPopupContainer(topPane);
 		popUp.setSource(settingButton);
+		
+		VBox advBox = new VBox();
+		HBox topAdvBox = new HBox();
+		nameAdvField = new JFXTextField();
+		nameAdvField.setPromptText("Nama");
+		datePicker = new JFXDatePicker();
+		datePicker.setPromptText("Tanggal Lahir");
+		topAdvBox.getChildren().addAll(nameAdvField, datePicker);
+		HBox midAdvBox = new HBox();
+		parishAdvField = new JFXTextField();
+		parishAdvField.setPromptText("Paroki");
+		parishCityAdvField = new JFXTextField();
+		parishCityAdvField.setPromptText("Kota Paroki");
+		midAdvBox.getChildren().addAll(parishAdvField, parishCityAdvField);
+		HBox botAdvBox = new HBox();
+		advOkButton = new JFXButton("OK");
+		advOkButton.getStyleClass().add("button-raised");
+		advOkButton.setStyle("-fx-pref-width : 40");
+		advCancelButton = new JFXButton("Cancel");
+		botAdvBox.getChildren().addAll(advOkButton, advCancelButton);
+		botAdvBox.setAlignment(Pos.CENTER_RIGHT);
+		advBox.getChildren().addAll(topAdvBox, midAdvBox, botAdvBox);
+		advBox.setSpacing(10);
+		advBox.setMargin(topAdvBox, new Insets(20, 20, 0, 20));
+		advBox.setMargin(midAdvBox, new Insets(0, 20, 0, 20));
+		advBox.setMargin(botAdvBox, new Insets(0, 20, 20, 20));
+		
+		advPopUp= new JFXPopup();
+		advPopUp.setContent(advBox);
+		advPopUp.setPopupContainer(topPane);
+		advPopUp.setSource(downArrowImg);
         
         root.setTop(topPane);
         root.setStyle("-fx-background-color : #F5F5F5");
@@ -266,5 +302,49 @@ public class SearchView extends DefaultView<SearchModel, StackPane, SearchContro
 
 	public FileChooser getFileChooser() {
 		return fileChooser;
+	}
+
+	public Label getAdvSearchLabel() {
+		return advSearchLabel;
+	}
+
+	public JFXButton getSettingButton() {
+		return settingButton;
+	}
+
+	public ImageView getDownArrowImg() {
+		return downArrowImg;
+	}
+
+	public JFXPopup getAdvPopUp() {
+		return advPopUp;
+	}
+
+	public JFXButton getAdvOkButton() {
+		return advOkButton;
+	}
+
+	public JFXButton getAdvCancelButton() {
+		return advCancelButton;
+	}
+
+	public BorderPane getRoot() {
+		return root;
+	}
+
+	public JFXTextField getNameAdvField() {
+		return nameAdvField;
+	}
+
+	public JFXTextField getParishAdvField() {
+		return parishAdvField;
+	}
+
+	public JFXTextField getParishCityAdvField() {
+		return parishCityAdvField;
+	}
+
+	public JFXDatePicker getDatePicker() {
+		return datePicker;
 	}
 }
