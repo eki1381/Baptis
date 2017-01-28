@@ -8,6 +8,7 @@ import org.jrebirth.af.api.wave.contract.WaveItem;
 import org.jrebirth.af.api.wave.contract.WaveType;
 import org.jrebirth.af.core.wave.WaveItemBase;
 import org.ryh.baptis.beans.Databaptis;
+import org.ryh.baptis.beans.DatabaptisProperty;
 import org.ryh.baptis.beans.Page;
 
 import javafx.collections.ObservableList;
@@ -57,4 +58,14 @@ public interface BaptisWaves extends Preloadable{
     String VIEW_RESULT = "VIEW_RESULT";
     
     WaveType DO_VIEW_RESULT = waveType(VIEW_RESULT);
+    
+    WaveItem<String> PRINT = new WaveItemBase<String>(){};
+    
+    WaveItem<DatabaptisProperty> GENERATE = new WaveItemBase<DatabaptisProperty>(){};
+    
+    WaveType DO_HIDE_INDEX = waveType("HIDE_INDEX");
+    
+    WaveItem<String> HIDE = new WaveItemBase<String>(){};
+    
+    WaveType DO_PRINT_DOC = waveType("PRINT_DOC");
 }

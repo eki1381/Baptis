@@ -35,6 +35,7 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Dat
 		callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, new File("databaptis.dbf")));
 		listen(BaptisWaves.DO_SHOW_RESULT);
 		indexFile = null;
+		listen(BaptisWaves.DO_HIDE_INDEX);
 	}
 
 	@Override
@@ -132,6 +133,10 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Dat
 	
 	public void doNotifyResult(final Wave wave){
 		sendWave(BaptisWaves.DO_SHOW_DATA, WBuilder.waveData(BaptisWaves.DATA, selectedData));
+	}
+	
+	public void doHideIndex(final Wave wave){
+		System.out.println("Index telah selesai");
 	}
 	
 	public void showFileChooser(){

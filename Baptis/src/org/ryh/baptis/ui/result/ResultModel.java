@@ -2,13 +2,16 @@ package org.ryh.baptis.ui.result;
 
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.core.ui.object.DefaultObjectModel;
+import org.jrebirth.af.core.wave.WBuilder;
 import org.ryh.baptis.beans.DatabaptisProperty;
+import org.ryh.baptis.command.PrintCommand;
+import org.ryh.baptis.ui.BaptisWaves;
 
 public class ResultModel extends DefaultObjectModel<ResultModel, ResultView, DatabaptisProperty>{
 	
 	@Override
 	protected void initModel() {
-		
+		listen(BaptisWaves.DO_PRINT_DOC);
 	}
 
 	@Override
@@ -38,5 +41,12 @@ public class ResultModel extends DefaultObjectModel<ResultModel, ResultView, Dat
 	@Override
 	protected void processWave(Wave wave) {
 		super.processWave(wave);
+	}
+	
+	public void doPrintDoc(final Wave wave){
+		if(view().getPrintCombo().getSelectionModel().getSelectedItem() != null){
+			callCommand(PrintCommand.class, WBuilder.waveData(BaptisWaves.PRINT, view().getPrintCombo().getSelectionModel().getSelectedItem().getText()));
+			view().getPrintDialog().close();
+		}
 	}
 }

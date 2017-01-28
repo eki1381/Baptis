@@ -72,7 +72,7 @@ public class SearchServiceImpl extends DefaultService implements SearchService{
 			finalQuery.add(t, Occur.MUST);
 		}
 		
-		int hitsPerPage = 10;
+		int hitsPerPage = 100000;
 		IndexReader reader = DirectoryReader.open(index);
 		IndexSearcher searcher = new IndexSearcher(reader);
 		TopDocs docs = searcher.search(finalQuery.build(), hitsPerPage);

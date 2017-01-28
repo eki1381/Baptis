@@ -9,6 +9,9 @@ import org.jrebirth.af.api.ui.annotation.RootNodeId;
 import org.jrebirth.af.core.ui.DefaultView;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXComboBox;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialog.DialogTransition;
 import com.jfoenix.controls.JFXTextField;
 
 import javafx.geometry.Insets;
@@ -19,13 +22,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 @RootNodeId("ResultPanel")
-public class ResultView extends DefaultView<ResultModel, BorderPane, ResultController>{
+public class ResultView extends DefaultView<ResultModel, StackPane, ResultController>{
 
+	private BorderPane root;
 	@OnAction(name = "Back")
 	private JFXButton backButton;
 	
@@ -39,10 +44,17 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 	
 	private ImageView photoImage;
 	
-	@OnAction(name = "Print")
+	@OnAction(name = "Show")
 	private JFXButton printButton;
 	
 	private BorderPane topPane;
+	private JFXComboBox<Label> c;
+	
+	private JFXButton printMenuButton;
+	
+	private JFXButton cancelPrintMenuButton;
+	
+	private JFXDialog printDialog;
 	
 	public ResultView(ResultModel model) {
 		super(model);
@@ -51,6 +63,8 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 	@SuppressWarnings({ "static-access", "unused" })
 	@Override
 	protected void initView() {
+		root = new BorderPane();
+		
 		DropShadow ds = new DropShadow();
         ds.setOffsetY(1.0);
         ds.setOffsetX(1.0);
@@ -223,6 +237,24 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         VBox rightBox = new VBox();
         rightBox.setSpacing(10);
         
+        VBox printPopUpBox = new VBox();
+        Label choosePrinterLabel = new Label("Pilih printer yang ingin digunakan : ");
+        c = new JFXComboBox<>();
+        HBox printButtonBox = new HBox();
+        printMenuButton = new JFXButton("Print");
+        printMenuButton.getStyleClass().add("button-raised");
+        printMenuButton.setStyle("-fx-pref-width : 50");
+        cancelPrintMenuButton = new JFXButton("Cancel");
+        printButtonBox.getChildren().addAll(printMenuButton, cancelPrintMenuButton);
+        printButtonBox.setAlignment(Pos.CENTER_RIGHT);
+        printButtonBox.setSpacing(10);
+        printPopUpBox.getChildren().addAll(choosePrinterLabel, c, printButtonBox);
+        printPopUpBox.setAlignment(Pos.CENTER_LEFT);
+        printPopUpBox.setSpacing(20);
+        printPopUpBox.setPadding(new Insets(20));
+        
+        printDialog = new JFXDialog(node(), printPopUpBox, DialogTransition.CENTER);
+        
         try {
 			final Font f = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Regular.ttf")), 25);
 			final Font g = Font.loadFont(new FileInputStream(new File("src/resources/Roboto-Regular.ttf")), 16);
@@ -266,6 +298,7 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 			halField.setFont(g);
 			noLabel.setFont(g);
 			noField.setFont(g);
+			choosePrinterLabel.setFont(g);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -319,13 +352,15 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
         		, kotaParokiBox, namaStasiBox, ayahBox, ibuBox, tmptBaptisBox);
         rightBox.getChildren().addAll(tglBaptisBox, tmptKrismaBox, tglKrismaBox, kawinDgnBox
         		, tglKawinBox, tglMatiBox, bukuBox, halBox, noBox, printBox);
-        node().setTop(topPane);
-        node().setLeft(leftBox);
-        node().setCenter(midBox);
-        node().setRight(rightBox);
-        node().setMargin(leftBox, new Insets(50, 50, 0, 100));
-        node().setMargin(midBox, new Insets(50, 50, 0, 50));
-        node().setMargin(rightBox, new Insets(50, 100, 0, 50));
+        root.setTop(topPane);
+        root.setLeft(leftBox);
+        root.setCenter(midBox);
+        root.setRight(rightBox);
+        root.setMargin(leftBox, new Insets(50, 50, 0, 100));
+        root.setMargin(midBox, new Insets(50, 50, 0, 50));
+        root.setMargin(rightBox, new Insets(50, 100, 0, 50));
+        
+        node().getChildren().add(root);
 	}
 	
 	@Override
@@ -425,5 +460,21 @@ public class ResultView extends DefaultView<ResultModel, BorderPane, ResultContr
 	
 	public BorderPane getTopPane(){
 		return topPane;
+	}
+	
+	public JFXDialog getPrintDialog(){
+		return printDialog;
+	}
+	
+	public JFXComboBox<Label> getPrintCombo(){
+		return c;
+	}
+	
+	public JFXButton getPrintMenuButton(){
+		return printMenuButton;
+	}
+	
+	public JFXButton getCancelPrintMenuButton(){
+		return cancelPrintMenuButton;
 	}
 }
