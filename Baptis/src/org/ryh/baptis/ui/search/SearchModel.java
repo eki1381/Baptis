@@ -3,6 +3,8 @@ package org.ryh.baptis.ui.search;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.prefs.Preferences;
+
 import org.jrebirth.af.api.wave.Wave;
 import org.jrebirth.af.core.ui.object.DefaultObjectModel;
 import org.jrebirth.af.core.wave.WBuilder;
@@ -29,10 +31,17 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Dat
 	
 	private Databaptis selectedData;
 	private File indexFile;
+	private Preferences prefs;
+	private static final String INDEX_PATH = "INDEX_PATH";
 
 	@Override
 	protected void initModel() {
-		callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, new File("databaptis.dbf")));
+		prefs = Preferences.userRoot().node(this.getClass().getName());
+		if(prefs.get(INDEX_PATH, null) != null){
+			callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, new File(prefs.get(INDEX_PATH, null))));
+		}else{
+			callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, new File("Databaptis.dbf")));
+		}
 		listen(BaptisWaves.DO_SHOW_RESULT);
 		indexFile = null;
 		listen(BaptisWaves.DO_HIDE_INDEX);
@@ -142,6 +151,7 @@ public class SearchModel extends DefaultObjectModel<SearchModel, SearchView, Dat
 	public void showFileChooser(){
 		try{
 			indexFile = view().getFileChooser().showOpenDialog(null);
+			prefs.put(INDEX_PATH, indexFile.getAbsolutePath());
 			callCommand(IndexCommand.class, WBuilder.waveData(BaptisWaves.INDEX, indexFile));
 		}catch(NullPointerException e){
 			

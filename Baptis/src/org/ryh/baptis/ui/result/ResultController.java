@@ -38,6 +38,7 @@ public class ResultController extends DefaultController<ResultModel, ResultView>
 		for(int i = 0;i < services.length;i++){
 			view().getPrintCombo().getItems().add(new Label(services[i].getName()));
 		}
+		view().getPrintCombo().getSelectionModel().select(0);
 		view().getPrintDialog().show();
 	}
 
