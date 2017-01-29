@@ -12,7 +12,9 @@ import org.ryh.baptis.command.GeneratePdfCommand;
 import org.ryh.baptis.ui.BaptisWaves;
 
 import javafx.event.ActionEvent;
+import javafx.scene.Cursor;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 
 public class ResultController extends DefaultController<ResultModel, ResultView>{
 
@@ -24,6 +26,14 @@ public class ResultController extends DefaultController<ResultModel, ResultView>
 	protected void initEventAdapters() throws CoreException {
 		view().getPrintMenuButton().setOnAction(e -> printPdf(view().getPrintCombo().getSelectionModel().getSelectedItem().getText()));
 		view().getCancelPrintMenuButton().setOnAction(e -> view().getPrintDialog().close());
+		view().getBackButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getBackButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
+		view().getPrintButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getPrintButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
+		view().getCancelPrintMenuButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getCancelPrintMenuButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
+		view().getPrintMenuButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getPrintMenuButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
 	}
 	
 	@Override
@@ -48,5 +58,13 @@ public class ResultController extends DefaultController<ResultModel, ResultView>
 	
 	public void printPdf(String printerName){
 		callCommand(GeneratePdfCommand.class,WBuilder.waveData(BaptisWaves.GENERATE, model().object()));
+	}
+	
+	private void changeCursor(boolean isEntered){
+		if(isEntered){
+			view().node().setCursor(Cursor.HAND);
+		}else{
+			view().node().setCursor(Cursor.DEFAULT);
+		}
 	}
 }

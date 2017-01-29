@@ -477,4 +477,12 @@ public class ResultView extends DefaultView<ResultModel, StackPane, ResultContro
 	public JFXButton getCancelPrintMenuButton(){
 		return cancelPrintMenuButton;
 	}
+	
+	public JFXButton getBackButton(){
+		return backButton;
+	}
+	
+	public JFXButton getPrintButton(){
+		return printButton;
+	}
 }

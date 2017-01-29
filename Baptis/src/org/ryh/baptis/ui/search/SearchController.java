@@ -52,8 +52,14 @@ public class SearchController extends DefaultController<SearchModel, SearchView>
 		view().getAdvSearchLabel().addEventFilter(MouseEvent.MOUSE_EXITED, e -> advSearchLabelMouseEntered(false));
 		view().getDownArrowImg().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> showAdvPopUp());
 		view().getAdvSearchLabel().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> showAdvPopUp());
+		view().getAdvCancelButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getAdvCancelButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
 		view().getAdvCancelButton().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> view().getAdvPopUp().close());
+		view().getAdvOkButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getAdvOkButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
 		view().getAdvOkButton().addEventFilter(MouseEvent.MOUSE_CLICKED, e -> advSearching());
+		view().getSettingMenuButton().addEventFilter(MouseEvent.MOUSE_ENTERED, e -> changeCursor(true));
+		view().getSettingMenuButton().addEventFilter(MouseEvent.MOUSE_EXITED, e -> changeCursor(false));
 	}
 	
 	private void advSearchLabelMouseEntered(boolean isEntered){

@@ -347,4 +347,8 @@ public class SearchView extends DefaultView<SearchModel, StackPane, SearchContro
 	public JFXDatePicker getDatePicker() {
 		return datePicker;
 	}
+	
+	public JFXButton getSettingMenuButton(){
+		return settingMenuButton;
+	}
 }

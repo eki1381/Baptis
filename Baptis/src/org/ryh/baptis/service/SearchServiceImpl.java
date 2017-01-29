@@ -15,6 +15,7 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TopDocs;
@@ -55,8 +56,7 @@ public class SearchServiceImpl extends DefaultService implements SearchService{
 		}
 		
 		if(databaptis.getTGLLAHIR() != null){
-			String queryName = String.valueOf(databaptis.getTGLLAHIR().getTime());
-			Query r = new QueryParser("TGLLAHIR", analyzer).parse(queryName);
+			Query r = NumericRangeQuery.newLongRange("TGLLAHIR", databaptis.getTGLLAHIR().getTime(), databaptis.getTGLLAHIR().getTime(), true, true);
 			finalQuery.add(r, Occur.MUST);
 		}
 			
